@@ -10,6 +10,10 @@ on:
   create:
     # This will trigger for both branch and tag creation but the jobs will filter further
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
