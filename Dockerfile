@@ -60,7 +60,7 @@ RUN apt-get update && apt-get install curl ffmpeg libsm6 libxext6  -y
 ADD https://astral.sh/uv/install.sh /install.sh
 RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh && mv /root/.cargo/bin/uv /usr/bin/
 
-RUN uv pip install --system torch==2.1.2+cpu torchvision==0.16.2+cpu torchaudio==2.1.2+cpu --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
 RUN uv pip install --system -r requirements.txt --no-cache-dir
 
 # Install pandoc and netcat
