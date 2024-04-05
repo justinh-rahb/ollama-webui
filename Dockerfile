@@ -60,6 +60,10 @@ RUN apt-get update && apt-get install curl ffmpeg libsm6 libxext6  -y
 ADD https://astral.sh/uv/install.sh /install.sh
 RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh && mv /root/.cargo/bin/uv /usr/bin/
 
+# install uv
+ADD https://astral.sh/uv/install.sh /install.sh
+RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh && mv /root/.cargo/bin/uv /usr/bin/
+
 RUN uv pip install --system torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
 RUN uv pip install --system -r requirements.txt --no-cache-dir
 
