@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:alpine as build
+FROM oven/bun:alpine as build
 
 WORKDIR /app
 
@@ -9,10 +9,10 @@ RUN wget "https://chroma-onnx-models.s3.amazonaws.com/all-MiniLM-L6-v2/onnx.tar.
     tar -xzf - -C /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN bun install --frozen-lockfile
 
 COPY . .
-RUN npm run build
+RUN bun run build
 
 
 FROM python:3.11-slim-bookworm as base
@@ -54,10 +54,14 @@ WORKDIR /app/backend
 # install python dependencies
 COPY ./backend/requirements.txt ./requirements.txt
 
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+RUN apt-get update && apt-get install curl ffmpeg libsm6 libxext6  -y
 
-RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
-RUN pip3 install -r requirements.txt --no-cache-dir
+# install uv
+ADD https://astral.sh/uv/install.sh /install.sh
+RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh && mv /root/.cargo/bin/uv /usr/bin/
+
+RUN uv pip install --system torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
+RUN uv pip install --system -r requirements.txt --no-cache-dir
 
 # Install pandoc and netcat
 # RUN python -c "import pypandoc; pypandoc.download_pandoc()"
